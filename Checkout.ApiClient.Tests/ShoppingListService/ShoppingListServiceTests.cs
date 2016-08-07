@@ -46,7 +46,7 @@ namespace Tests.ShoppingListService
         }
         
         [Test]
-        public void ShoppingListService_ProductWithoutName_ReturnsErrorMessage()
+        public void ShoppingListService_AddProductWithoutName_ReturnsErrorMessage()
         {
             // Given
             var newProduct = new ProductAdd() { Name = string.Empty, Quantity = 1 };
@@ -62,7 +62,7 @@ namespace Tests.ShoppingListService
         }
 
         [Test]
-        public void ShoppingListService_ProductWithoutQuantity_ReturnsErrorMessage()
+        public void ShoppingListService_AddProductWithoutQuantity_ReturnsErrorMessage()
         {
             // Given
             var newProduct = new ProductAdd() { Name = "Added Product", Quantity = 0 };
@@ -172,6 +172,38 @@ namespace Tests.ShoppingListService
             // Then
             response.Should().NotBeNull();
             response.HttpStatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Test]
+        public void ShoppingListService_UpdateProductWithoutName_ReturnsErrorMessage()
+        {
+            // Given
+            var product = new ProductUpdate() { Name = string.Empty, Quantity = 1 };
+
+            // When
+            var response = CheckoutClient.ShoppingListService.UpdateProduct(product);
+
+            // Then
+            response.Should().NotBeNull();
+            response.HttpStatusCode.Should().Be(HttpStatusCode.BadRequest);
+            response.HasError.Should().BeTrue();
+            response.Error.Message.Should().Be("Product Name is required");
+        }
+
+        [Test]
+        public void ShoppingListService_UpdateProductWithoutQuantity_ReturnsErrorMessage()
+        {
+            // Given
+            var newProduct = new ProductAdd() { Name = "Update Product", Quantity = 0 };
+
+            // When
+            var response = CheckoutClient.ShoppingListService.AddProduct(newProduct);
+
+            // Then
+            response.Should().NotBeNull();
+            response.HttpStatusCode.Should().Be(HttpStatusCode.BadRequest);
+            response.HasError.Should().BeTrue();
+            response.Error.Message.Should().Be("Quantity greater than 0 required");
         }
     }
 }
